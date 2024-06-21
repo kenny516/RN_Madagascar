@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/output.css">
+    <title>Carte Google Maps avec GeoJSON</title>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script>
+        let map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -18, lng: 47 },
+                zoom: 7,
+            });
+
+            // Charger le fichier GeoJSON
+            map.data.loadGeoJson("rn.geojson", null, function () {
+                // Appliquer des styles
+                map.data.setStyle({
+                    fillColor: "blue",
+                    strokeWeight: 0,
+                });
+
+                // Ajouter un écouteur d'événement pour afficher des informations sur les features
+                map.data.addListener("click", function (event) {
+                    const feature = event.feature;
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `
+                        <div
+                            class="grid justify-center h-auto grid-cols-1 gap-4 pb-4 border-2 border-black shadow-2xl w-60 rounded-xl bg-gray-50">
+                            <h2 class="w-full text-lg font-semibold text-center text-white bg-gray-800">INFORMATION ${feature.getProperty("ROADNO")}</h2>
+                            <p class="flex justify-center text-black">Quality of road : <span class="ml-1 font-bold">${feature.getProperty("CONDITION")}</span></p>
+                            <p class="flex justify-center text-black">Length : <span class="ml-1 font-bold">${feature.getProperty("LENGTHKM")} KM</span></p>
+                            <p class="flex justify-center text-black">Surface : <span class="ml-1 font-bold">${feature.getProperty("SURFTYPE")}</span></p>
+                        </div>`,
+                        position: event.latLng,
+                    });
+                    infoWindow.open(map);
+                });
+
+                // Charger la liste des ROADNO pour la sélection
+                loadRoadnoOptions();
+            }, function (error) {
+                console.error("Erreur lors du chargement du fichier GeoJSON: ", error);
+            });
+        }
+
+        function loadRoadnoOptions() {
+            // Utiliser map.data pour obtenir toutes les features et extraire les ROADNO uniques
+            const roadnoSet = new Set();
+            map.data.forEach(function (feature) {
+                roadnoSet.add(feature.getProperty("ROADNO"));
+            });
+
+            const roadnoSelect = document.getElementById("roadno-select");
+
+            // Réinitialiser le contenu du select pour éviter les doublons
+            roadnoSelect.innerHTML = '<option class="justify-center font-semibold">Choose a road</option>';
+
+            roadnoSet.forEach(function (roadno) {
+                const option = document.createElement("option");
+                option.value = roadno;
+                option.textContent = roadno;
+                option.className = "justify-center font-semibold";
+                roadnoSelect.appendChild(option);
+            });
+
+            // Ajouter un écouteur d'événement pour la sélection
+            roadnoSelect.addEventListener("change", function () {
+                const selectedRoadno = roadnoSelect.value;
+                var idDist = 0;
+                var length = 0;
+                var intF = 0;
+                map.data.forEach(function (feature) {
+                    if (feature.getProperty("ROADNO") === selectedRoadno) {
+                        const firstCoordinate = feature.getGeometry().getAt(0).getAt(0);
+                        // Centre la carte sur les premières coordonnées de la route
+                        map.setCenter(new google.maps.LatLng(firstCoordinate.lat(), firstCoordinate.lng()));
+                        // Mettre à jour le titre avec le numéro de route sélectionné
+                        document.getElementById('roadnoTitle').innerText = `Detail RN: ${selectedRoadno}`;
+
+                        // Exemple: Mettre à jour la qualité de la route
+                        const quality = feature.getProperty("CONDITION");
+                        document.getElementById('qualiteLabel').innerText = `Qualité : ${quality}`;
+
+                        const position = feature.getProperty("REGIONS");
+
+                        if (intF === 0) {
+                            document.getElementById('depart').innerText = `Region depart : ${position}`;
+                            document.getElementById('arrive').innerText = `Region arrive : ${position}`;
+                            intF++;
+                        }
+                        else {
+                            document.getElementById('arrive').innerText = `Region arrive : ${position}`;
+                        }
+
+
+                        // Exemple: Mettre à jour la durée du trajet
+
+                        if (idDist === 0) {
+                            idDist = 1;
+                            length = feature.getProperty("LENGTHKM");
+                        } else {
+                            length += feature.getProperty("LENGTHKM");
+
+                        }
+                        document.getElementById('dureeLabel').innerText = `Distance trajet: ${length.toFixed(2)} km`;
+                    }
+                });
+                highlightRoadno(selectedRoadno);
+            });
+        }
+
+        function highlightRoadno(roadno) {
+            if (roadno) {
+                map.data.setStyle(function (feature) {
+                    if (feature.getProperty("ROADNO") === roadno) {
+                        if (feature.getProperty("CONDITION") === "Fair") {
+                            return {
+                                strokeColor: "yellow",
+                                strokeWeight: 4,
+                                strokeOpacity: 1.0
+                            };
+                        } else if (feature.getProperty("CONDITION") === "Poor") {
+                            return {
+                                strokeColor: "red",
+                                strokeWeight: 4,
+                                strokeOpacity: 1.0
+                            };
+                        } else {
+                            return {
+                                strokeColor: "green",
+                                strokeWeight: 4,
+                                strokeOpacity: 1.0
+                            };
+                        }
+
+                    } else {
+                        return {
+                            strokeColor: "yellow",
+                            strokeWeight: 4,
+                            strokeOpacity: 0.0
+                        };
+                    }
+                });
+            }
+        }
+        function highlightRoadnoSecton(condition) {
+            map.data.setStyle(function (feature) {
+                if (feature.getProperty("CONDITION") === "Fair" && feature.getProperty("CONDITION") === condition) {
+                    return {
+                        strokeColor: "yellow",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                } else if (feature.getProperty("CONDITION") === "Poor" && feature.getProperty("CONDITION") === condition) {
+                    return {
+                        strokeColor: "red",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                } else if (feature.getProperty("CONDITION") === condition) {
+                    return {
+                        strokeColor: "green",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                } else {
+                    return {
+                        strokeColor: "yellow",
+                        strokeWeight: 4,
+                        strokeOpacity: 0.0
+                    };
+                }
+            });
+        }
+        function highlightRoadnoALL() {
+            map.data.setStyle(function (feature) {
+                if (feature.getProperty("CONDITION") === "Fair") {
+                    return {
+                        strokeColor: "yellow",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                } else if (feature.getProperty("CONDITION") === "Poor") {
+                    return {
+                        strokeColor: "red",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                } else {
+                    return {
+                        strokeColor: "green",
+                        strokeWeight: 4,
+                        strokeOpacity: 1.0
+                    };
+                }
+
+            });
+        }
+
+    </script>
+</head>
+
+<body onload="initMap()" class="bg-gray-100">
+    <nav class="p-4 text-white bg-indigo-900">
+        <h1 class="text-2xl font-bold ">RN Map MADAGASCAR</h1>
+    </nav>
+    <div class="flex w-screen h-screen">
+        <div id="map" class="flex-1 m-4 rounded-lg shadow-lg"></div>
+        <div class="w-1/4 p-4 m-4 bg-white rounded-lg shadow-lg">
+            <div class="space-y-4">
+                <label for="roadno-select" class="block text-lg font-bold text-gray-700">Find the RN:</label>
+                <select id="roadno-select" class="w-full p-2 border border-gray-300 rounded-md">
+                    <option class="font-semibold">Choose a road</option>
+                </select>
+                <button class="w-full p-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                    onclick="highlightRoadnoALL()">
+                    All roads
+                </button>
+                <button class="w-full p-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+                    onclick="highlightRoadnoSecton('Good')">
+                    All roads Good
+                </button>
+                <button class="w-full p-2 text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
+                    onclick="highlightRoadnoSecton('Fair')">
+                    All roads Fair
+                </button>
+                <button class="w-full p-2 text-white bg-red-500 rounded-md hover:bg-red-600"
+                    onclick="highlightRoadnoSecton('Poor')">
+                    All roads Poor
+                </button>
+            </div>
+            <div class="mt-8 space-y-4">
+                <h2 id="roadnoTitle" class="text-xl font-bold text-gray-800"></h2>
+                <p id="depart" class="text-gray-700"></p>
+                <p id="arrive" class="text-gray-700"></p>
+                <p id="qualiteLabel" class="text-gray-700"></p>
+                <p id="dureeLabel" class="text-gray-700"></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
