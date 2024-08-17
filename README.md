@@ -6,7 +6,7 @@ Sure! Here’s a stylish and engaging README template for your project, `RN_Mada
 
 **RN_Madagascar** is a dynamic and interactive mobile application designed to showcase the beautiful routes and destinations of Madagascar. Explore the island’s diverse landscapes, cultural landmarks, and stunning natural wonders with ease and elegance.
 
-![Madagascar](https://example.com/madagascar-banner.jpg) <!-- Replace with your image -->
+![Madagascar](https://www.shutterstock.com/image-vector/madagascar-flag-pattern-background-realistic-national-2482108381)
 
 ## 🌟 Features
 
@@ -17,11 +17,6 @@ Sure! Here’s a stylish and engaging README template for your project, `RN_Mada
 - **User-Friendly Interface**: Enjoy a seamless and visually appealing experience designed for both casual travelers and avid explorers.
 
 ## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js**: Ensure you have Node.js installed. [Download Node.js](https://nodejs.org/)
-- **React Native CLI**: Install the React Native CLI globally. Run `npm install -g react-native-cli` or `yarn global add react-native-cli`.
 
 ### Installation
 
@@ -36,28 +31,6 @@ Sure! Here’s a stylish and engaging README template for your project, `RN_Mada
    ```bash
    cd RN_Madagascar
    ```
-
-3. **Install Dependencies**:
-
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-4. **Run the Application**:
-
-    - For iOS:
-
-      ```bash
-      npx react-native run-ios
-      ```
-
-    - For Android:
-
-      ```bash
-      npx react-native run-android
-      ```
 
 ## 📜 Usage
 
