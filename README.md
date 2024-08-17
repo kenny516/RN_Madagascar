@@ -1,4 +1,4 @@
-Sure! Here’s a stylish and engaging README template for your project, `RN_Madagascar`, focused on highlighting the routes of Madagascar. You can customize it further to match your project's specifics and style.
+Certainly! Here's the updated README with the deployment link included:
 
 ---
 
@@ -23,7 +23,7 @@ Sure! Here’s a stylish and engaging README template for your project, `RN_Mada
 1. **Clone the Repository**:
 
    ```bash
-   git https://github.com/kenny516/RN_Madagascar.git
+   git clone https://github.com/kenny516/RN_Madagascar.git
    ```
 
 2. **Navigate to the Project Directory**:
@@ -55,10 +55,14 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For any inquiries or feedback, please reach out to [kennyandriantsirafychan@gmail.com](mailto:kennyandriantsirafychan@gmail.com).
 
+## 🌐 Live Demo
+
+Check out the live demo of **RN_Madagascar** at [https://kenny516.github.io/RN_Madagascar/](https://kenny516.github.io/RN_Madagascar/).
+
 ---
 
 Happy exploring Madagascar with **RN_Madagascar**! 🏝️🚗✨
 
 ---
 
-Feel free to update the placeholder links, images, and other specific details to match your project. This README template should give your project a professional and inviting look.
+Feel free to adjust the image URL, links, and other details as needed to fit your project's specifics.
