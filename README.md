@@ -6,7 +6,7 @@ Sure! Here’s a stylish and engaging README template for your project, `RN_Mada
 
 **RN_Madagascar** is a dynamic and interactive mobile application designed to showcase the beautiful routes and destinations of Madagascar. Explore the island’s diverse landscapes, cultural landmarks, and stunning natural wonders with ease and elegance.
 
-![Madagascar](https://www.shutterstock.com/image-vector/madagascar-flag-pattern-background-realistic-national-2482108381)
+![Madagascar](https://commons.wikimedia.org/w/index.php?curid=343639)
 
 ## 🌟 Features
 
